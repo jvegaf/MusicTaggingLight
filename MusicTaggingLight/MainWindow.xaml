@@ -10,8 +10,8 @@
         Title="Music Tagging Light"
         Height="560"
         Width="1028"
-        MinHeight="350"
-        MinWidth="540">
+        MinHeight="560"
+        MinWidth="1028">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
@@ -44,7 +44,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="57" />
             <RowDefinition />
-            <RowDefinition Height="93" />
+            <RowDefinition Height="51.04" />
+            <RowDefinition Height="0"/>
             <RowDefinition Height="23" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
@@ -147,8 +148,7 @@
                 <UserControl Content="{Binding DetailView}"/>
             </ScrollViewer>
         </Grid>
-        <Grid Grid.Row="2"
-              VerticalAlignment="Top">
+        <Grid Grid.Row="2" Margin="0,0,0,0" Grid.RowSpan="2">
             <Separator HorizontalAlignment="Left"
                        Height="5"
                        Width="10"
@@ -172,7 +172,7 @@
                     HorizontalAlignment="Left"
                     Width="117"
                     Height="23"
-                    Margin="10,20,0,10">
+                    Margin="8,19,0,0">
                 <StackPanel Orientation="Horizontal">
                     <Image x:Name="image"
                            Source="pack://application:,,,/Resources/www.png"
@@ -189,7 +189,7 @@
                     HorizontalAlignment="Left"
                     Width="117"
                     Height="23"
-                    Margin="140,20,0,0">
+                    Margin="130,19,0,0">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="pack://application:,,,/Resources/save.png"
                            HorizontalAlignment="Left"
@@ -205,7 +205,7 @@
                     HorizontalAlignment="Left"
                     Width="117"
                     Height="23"
-                    Margin="262,20,0,0">
+                    Margin="252,19,0,0">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="pack://application:,,,/Resources/clear.png"
                            HorizontalAlignment="Left"
@@ -219,7 +219,7 @@
             <Button Command="{Binding OpenAboutCommand}"
                     VerticalAlignment="Top"
                     HorizontalAlignment="Left"
-                    Margin="10,50,0,0"
+                    Margin="496,19,0,0"
                     Width="117"
                     Height="23">
                 <StackPanel Orientation="Horizontal">
@@ -234,26 +234,10 @@
                 </StackPanel>
             </Button>
             <Button Command="{Binding ExitCommand}"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Left"
-                    Height="23"
-                    Margin="140,50,0,0"
-                    Width="117">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="Resources/shutdown.png"
-                           HorizontalAlignment="Left"
-                           Height="16"
-                           Margin="0,0,5,0"
-                           VerticalAlignment="Top"
-                           Width="16" />
-                    <TextBlock Text="Exit" />
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding ExitCommand}"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Left"
                 Height="23"
-                Margin="140,50,0,0"
+                Margin="618,19,0,0"
                 Width="117">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Resources/shutdown.png"
@@ -269,7 +253,7 @@
                 VerticalAlignment="Top"
                 HorizontalAlignment="Left"
                 Height="23"
-                Margin="262,50,0,0"
+                Margin="374,19,0,0"
                 Width="117">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="music.png"
@@ -282,9 +266,9 @@
                 </StackPanel>
             </Button>
         </Grid>
-        <StatusBar VerticalAlignment="Bottom"
+        <StatusBar VerticalAlignment="Center"
                    Background="WhiteSmoke"
-                   Grid.Row="3">
+                   Grid.Row="4" Height="22">
             <StatusBarItem>
                 <TextBlock x:Name="txtNotification"
                            Text="{Binding NotificationText}"

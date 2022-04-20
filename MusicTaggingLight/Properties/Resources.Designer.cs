@@ -19,7 +19,7 @@ namespace MusicTaggingLight.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,20 +61,18 @@ namespace MusicTaggingLight.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;items&gt;
-        ///  &lt;item Key=&quot;AlbumCover&quot; Value=&quot;0&quot;/&gt;
-        ///  &lt;item Key=&quot;Title&quot; Value=&quot;1&quot;/&gt;
-        ///  &lt;item Key=&quot;Artist&quot; Value=&quot;2&quot;/&gt;
-        ///  &lt;item Key=&quot;Album&quot; Value=&quot;3&quot;/&gt;
-        ///  &lt;item Key=&quot;Track&quot; Value=&quot;4&quot;/&gt;
-        ///  &lt;item Key=&quot;Year&quot; Value=&quot;5&quot;/&gt;
-        ///  &lt;item Key=&quot;Genre&quot; Value=&quot;6&quot;/&gt;
-        ///  &lt;item Key=&quot;FileName&quot; Value=&quot;7&quot;/&gt;
-        ///  &lt;item Key=&quot;FilePath&quot; Value=&quot;8&quot;/&gt;
-        ///  &lt;item Key=&quot;Comment&quot; Value=&quot;9&quot;/&gt;
-        ///&lt;/items&gt;
-        ///.
+        ///  &lt;Track&gt;7&lt;/Track&gt;
+        ///  &lt;Artist&gt;1&lt;/Artist&gt;
+        ///  &lt;Title&gt;0&lt;/Title&gt;
+        ///  &lt;Album&gt;2&lt;/Album&gt;
+        ///  &lt;Genre&gt;4&lt;/Genre&gt;
+        ///  &lt;Year&gt;3&lt;/Year&gt;
+        ///  &lt;Comment&gt;8&lt;/Comment&gt;
+        ///  &lt;FilePath&gt;6&lt;/FilePath&gt;
+        ///  &lt;FileName&gt;5&lt;/FileName&gt;
+        ///&lt;/items&gt;.
         /// </summary>
         internal static string colsorder {
             get {
