@@ -65,7 +65,7 @@
             
             <ContentControl Grid.Column="1" 
                             Content="{Binding DetailView}" 
-                            Width="{Binding DetColWidth}"/>
+                            Width="{Binding DetColActualWidth}"/>
         </Grid>
         
         <!-- Button toolbar -->
