@@ -131,7 +131,7 @@ namespace MusicTaggingLight
             if (e.Data.Contains(DataFormats.Files))
             {
                 var files = e.Data.GetFiles();
-                var data = files?.Select(f => f.Path.LocalPath).ToArray() ?? new string[0];
+                var data = files?.Select(f => f.Path.LocalPath).ToArray() ?? Array.Empty<string>();
 
                 if (!CheckForMp3(data))
                     return;
