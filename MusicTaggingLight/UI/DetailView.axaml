@@ -3,5 +3,31 @@
              x:Class="MusicTaggingLight.UI.DetailView">
     <StackPanel>
         <TextBlock Text="Detail View - Coming Soon" />
-    </StackPanel>
+    <StackPanel Spacing="8" Margin="16">
+        <TextBlock Text="Edit Music Tag Details" FontWeight="Bold" FontSize="18" Margin="0,0,0,12"/>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <TextBlock Text="Title:" Width="60"/>
+            <TextBox Width="200" Text="{Binding Title, Mode=TwoWay}" />
+        </StackPanel>
+       <StackPanel Orientation="Horizontal" Spacing="8">
+           <TextBlock Text="Artist:" Width="60"/>
+           <TextBox Width="200" Text="{Binding Artist, Mode=TwoWay}" />
+       </StackPanel>
+       <StackPanel Orientation="Horizontal" Spacing="8">
+           <TextBlock Text="Album:" Width="60"/>
+           <TextBox Width="200" Text="{Binding Album, Mode=TwoWay}" />
+       </StackPanel>
+       <StackPanel Orientation="Horizontal" Spacing="8">
+           <TextBlock Text="Year:" Width="60"/>
+           <TextBox Width="80" Text="{Binding Year, Mode=TwoWay}" />
+       </StackPanel>
+       <StackPanel Orientation="Horizontal" Spacing="8">
+           <TextBlock Text="Genre:" Width="60"/>
+           <TextBox Width="200" Text="{Binding Genre, Mode=TwoWay}" />
+       </StackPanel>
+       <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,16,0,0">
+           <Button Content="Save" Command="{Binding SaveCommand}" Width="80"/>
+           <Button Content="Cancel" Command="{Binding CancelCommand}" Width="80"/>
+       </StackPanel>
+   </StackPanel>
 </UserControl>
