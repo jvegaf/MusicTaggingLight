@@ -1,4 +1,5 @@
-﻿using DevExpress.Mvvm;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using MusicTaggingLight.Logic;
 using MusicTaggingLight.Models;
 using System;
@@ -10,7 +11,7 @@ using System.Windows.Input;
 
 namespace MusicTaggingLight.ViewModels
 {
-    public class DetailViewModel : ViewModelBase
+    public class DetailViewModel : ObservableObject
     {
 		private MainWindowViewModel mwvm;
 		private MusicFileTag musicFileTag;
@@ -20,7 +21,7 @@ namespace MusicTaggingLight.ViewModels
 			get { return musicFileTag; }
 			set 
 			{
-				SetProperty(ref musicFileTag, value, () => MusicfileTag); 
+				SetProperty(ref musicFileTag, value); 
 			}
 		}
 
@@ -33,7 +34,7 @@ namespace MusicTaggingLight.ViewModels
 
 		private void initCommands()
 		{
-			SaveTagsCommand = new DelegateCommand(this.Save);
+			SaveTagsCommand = new RelayCommand(this.Save);
 		}
 
 
