@@ -6,19 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using DevExpress.Mvvm;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using MusicTaggingLight.Models;
 using MusicTaggingLight.Logic;
 using TagLib;
 using File = TagLib.File;
-using System.Windows;
 using System.Collections;
 using MusicTaggingLight.ViewModels;
 using MusicTaggingLight.UI;
+using Avalonia.Controls;
 
 namespace MusicTaggingLight
 {
-    public class MainWindowViewModel : ViewModelBase
+    public class MainWindowViewModel : ObservableObject
     {
         public TaggingLogic Logic { get; set; }
         public DetailViewModel DetailVM { get; set; }
@@ -37,7 +38,7 @@ namespace MusicTaggingLight
 
         #region Commands
         public ICommand SelectRootFolderCommand { get; set; }
-        public ICommand<MusicFileTag> SaveCommand { get; set; }
+        public ICommand SaveCommand { get; set; }
         public ICommand SearchOnlineCommand { get; set; }
         public ICommand ExitCommand { get; set; }
         public ICommand OpenAboutCommand { get; set; }
@@ -58,22 +59,22 @@ namespace MusicTaggingLight
         private string _resultPreview;
         private string _notificationText;
         private string _notificationColor;
-        private GridLength _detColWidth;
+        private Avalonia.Controls.GridLength _detColWidth;
 
         public string NotificationColor
         {
             get { return _notificationColor; }
-            set { SetProperty(ref _notificationColor, value, () => NotificationColor); }
+            set { SetProperty(ref _notificationColor, value); }
         }
         public string NotificationText
         {
             get { return _notificationText; }
-            set { SetProperty(ref _notificationText, value, () => NotificationText); }
+            set { SetProperty(ref _notificationText, value); }
         }
         public string RootPath
         {
             get { return _rootPath; }
-            set { SetProperty(ref _rootPath, value, () => RootPath); }
+            set { SetProperty(ref _rootPath, value); }
         }
 
         public string FileNamePattern
@@ -81,7 +82,7 @@ namespace MusicTaggingLight
             get { return _fileNamePattern; }
             set 
             { 
-                SetProperty(ref _fileNamePattern, value, () => FileNamePattern); 
+                SetProperty(ref _fileNamePattern, value); 
             }
         }
         public string ResultPreview
@@ -89,7 +90,7 @@ namespace MusicTaggingLight
             get { return _resultPreview; }
             set 
             { 
-                SetProperty(ref _resultPreview, value, () => ResultPreview); 
+                SetProperty(ref _resultPreview, value); 
             }
         }
         public List<MusicFileTag> SelectedItems
@@ -97,7 +98,7 @@ namespace MusicTaggingLight
             get { return _selectedItems; }
             set
             {
-                SetProperty(ref _selectedItems, value, () => SelectedItems);
+                SetProperty(ref _selectedItems, value);
             }
         }
         public MusicFileTag ItemSelected
@@ -105,21 +106,21 @@ namespace MusicTaggingLight
             get { return _itemSelected; }
             set
             {
-                SetProperty(ref _itemSelected, value, () => ItemSelected);
+                SetProperty(ref _itemSelected, value);
             }
         }
-        public GridLength DetColWidth
+        public Avalonia.Controls.GridLength DetColWidth
         {
             get { return _detColWidth; }
             set
             {
-                SetProperty(ref _detColWidth, value, () => DetColWidth);
+                SetProperty(ref _detColWidth, value);
             }
         }
         public ObservableCollection<MusicFileTag> MusicFileTags
         {
             get { return _musicFileTags; }
-            set { SetProperty(ref _musicFileTags, value, () => MusicFileTags); }
+            set { SetProperty(ref _musicFileTags, value); }
         }
         #endregion View Properties
 
@@ -130,21 +131,21 @@ namespace MusicTaggingLight
             MusicFileTags = new ObservableCollection<MusicFileTag>();
             SelectedItems = new List<MusicFileTag>();
             Logic = new TaggingLogic();
-            DetColWidth = new GridLength(1, GridUnitType.Pixel);
+            DetColWidth = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Pixel);
             InitCommands();
             SetDefaultNotification();
         }
         private void InitCommands()
         {
-            SelectRootFolderCommand = new DelegateCommand(SelectRootFolder);
-            SaveCommand = new DelegateCommand<MusicFileTag>(Save);
-            SearchOnlineCommand = new AsyncCommand(SearchOnline);
-            TagFromFileNameCommand = new DelegateCommand(this.TagFromFilename);
-            SaveFromFNCommand = new DelegateCommand(this.SaveFromFN);
-            ExitCommand = new DelegateCommand(() => ExitAction.Invoke());
-            OpenAboutCommand = new DelegateCommand(this.OpenAbout);
-            ClearCommand = new DelegateCommand(this.ClearList);
-            ClearSelectionCommand = new DelegateCommand(() => ClearSelectionAction.Invoke());
+            SelectRootFolderCommand = new RelayCommand(SelectRootFolder);
+            SaveCommand = new RelayCommand<MusicFileTag?>(Save);
+            SearchOnlineCommand = new AsyncRelayCommand(SearchOnline);
+            TagFromFileNameCommand = new RelayCommand(this.TagFromFilename);
+            SaveFromFNCommand = new RelayCommand(this.SaveFromFN);
+            ExitCommand = new RelayCommand(() => ExitAction.Invoke());
+            OpenAboutCommand = new RelayCommand(this.OpenAbout);
+            ClearCommand = new RelayCommand(this.ClearList);
+            ClearSelectionCommand = new RelayCommand(() => ClearSelectionAction.Invoke());
         }
 
 
@@ -233,11 +234,11 @@ namespace MusicTaggingLight
             {
                 ItemSelected = SelectedItems.First();
                 DetailVM.SetItemToShow(ItemSelected);
-                DetColWidth = new GridLength(400, GridUnitType.Pixel);
+                DetColWidth = new Avalonia.Controls.GridLength(400, Avalonia.Controls.GridUnitType.Pixel);
             }
             else
             {
-                DetColWidth = new GridLength(1, GridUnitType.Pixel);
+                DetColWidth = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Pixel);
                 ItemSelected = null;
             }
         }
