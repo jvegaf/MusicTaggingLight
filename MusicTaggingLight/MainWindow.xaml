@@ -1,4 +1,4 @@
-﻿<Window x:Class="MusicTaggingLight.MainWindow"
+<Window x:Class="MusicTaggingLight.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -28,6 +28,18 @@
                     <Setter Property="Foreground" Value="White"/>
                 </Trigger>
             </Style.Triggers>
+        </Style>
+        <Style x:Key="Body_Content_DataGrid_Centering"
+        TargetType="{x:Type DataGridCell}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
     <Window.InputBindings>
@@ -76,11 +88,11 @@
                      Background="White"
                      Text="{Binding RootPath, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                      HorizontalAlignment="Stretch"
-                     Margin="10,28,80,0"
+                     Margin="10,28,160,0"
                      Height="22" />
             <Button VerticalAlignment="Center"
                     HorizontalAlignment="Right"
-                    Width="65"
+                    Width="145"
                     Command="{Binding SelectRootFolderCommand}"
                     Height="22"
                     Margin="0,28,10,7">
@@ -132,6 +144,9 @@
                       DragDrop.Drop="dgrFileTags_Drop"
                       SelectionMode="Extended"
                       SelectionUnit="FullRow"
+                      RowHeight="32"
+                      CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
+                      VerticalContentAlignment="Center"
                       Selector.SelectionChanged="SelectionChanged"
                       CanUserAddRows="False"
                       CanUserDeleteRows="False"
@@ -141,7 +156,7 @@
                       ItemsSource="{Binding MusicFileTags}"
                       Margin="0,0,5,0" 
                       RowBackground="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" 
-                      GridLinesVisibility="Horizontal" ColumnReordered="dgrFileTags_ColumnReordered" />
+                      GridLinesVisibility="Horizontal" ColumnReordered="dgrFileTags_ColumnReordered" FontSize="14" />
             <ScrollViewer Grid.Column="1"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
@@ -149,6 +164,7 @@
             </ScrollViewer>
         </Grid>
         <Grid Grid.Row="2" Margin="0,0,0,0" Grid.RowSpan="2">
+
             <Separator HorizontalAlignment="Left"
                        Height="5"
                        Width="10"
@@ -238,6 +254,7 @@
                 HorizontalAlignment="Left"
                 Height="23"
                 Margin="618,19,0,0"
+
                 Width="117">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Resources/shutdown.png"
