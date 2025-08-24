@@ -26,7 +26,7 @@ namespace MusicTaggingLight.UI
         private void TxtIcons_PointerPressed(object? sender, PointerPressedEventArgs e)
         {
             var textBlock = sender as TextBlock;
-            if (textBlock != null)
+            if (textBlock != null && !string.IsNullOrEmpty(textBlock.Text))
             {
                 OpenUrl(textBlock.Text);
             }
@@ -35,7 +35,7 @@ namespace MusicTaggingLight.UI
         private void TxtGithub_PointerPressed(object? sender, PointerPressedEventArgs e)
         {
             var textBlock = sender as TextBlock;
-            if (textBlock != null)
+            if (textBlock != null && !string.IsNullOrEmpty(textBlock.Text))
             {
                 OpenUrl(textBlock.Text);
             }

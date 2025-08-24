@@ -15,8 +15,14 @@ namespace MusicTaggingLight.UI
     /// </summary>
     public partial class DetailView : UserControl
     {
-
         private DetailViewModel dvm;
+
+        public DetailView()
+        {
+            InitializeComponent();
+            dvm = new DetailViewModel(new MainWindowViewModel());
+            this.DataContext = dvm;
+        }
 
         public DetailView(DetailViewModel vm)
         {

@@ -4,18 +4,19 @@
         Title="From Filename"
         Height="300"
         Width="400">
-    <StackPanel Margin="10">
-        <TextBlock Text="From Filename Window - Coming Soon" />
-        <Button Content="Close" Click="CloseButton_Click" HorizontalAlignment="Right" Margin="0,20,0,0"/>
-    <StackPanel Margin="10" Spacing="10">
-        <TextBlock Text="Enter filename pattern:" />
-        <TextBox x:Name="PatternTextBox" Width="350" />
+        <StackPanel Margin="10" Spacing="10">
+            <TextBlock Text="Enter filename pattern:" />
+            <TextBox x:Name="PatternTextBox" Width="350" Text="{Binding FileNamePattern, Mode=TwoWay}" />
+
         <TextBlock Text="Sample filename:" />
-        <TextBox x:Name="SampleFilenameTextBox" Width="350" />
+        <TextBox x:Name="SampleFilenameTextBox" Width="350" Text="{Binding ResultPreview}" IsReadOnly="True" />
+
         <TextBlock Text="Preview extracted tags:" />
         <ListBox x:Name="PreviewListBox" Height="80" Width="350" />
+
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
             <Button Content="Apply" Click="ApplyButton_Click" />
             <Button Content="Cancel" Click="CloseButton_Click" />
         </StackPanel>
+    </StackPanel>
 </Window>

@@ -11,10 +11,10 @@ namespace MusicTaggingLight.Models
     /// </summary>
     public class Result
     {
-        public Status Status { get; set; }
-        public string Message { get; set; }
-        public string InnerMessage { get; set; }
-        public Exception Exception { get; set; }
+    public Status Status { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public string InnerMessage { get; set; } = string.Empty;
+    public Exception? Exception { get; set; }
 
         public Result()
         {
@@ -29,7 +29,7 @@ namespace MusicTaggingLight.Models
             this.Exception = result.Exception;
         }
 
-        public Result(string message, Status status = Status.NULL, Exception exception = null)
+        public Result(string message, Status status = Status.NULL, Exception? exception = null)
         {
             this.Status = status;
             this.Message = message;
@@ -37,7 +37,7 @@ namespace MusicTaggingLight.Models
             this.Exception = exception;
         }
 
-        public Result(string message, string innerMessage = "", Status status = Status.NULL, Exception exception = null)
+        public Result(string message, string innerMessage = "", Status status = Status.NULL, Exception? exception = null)
         {
             this.Status = status;
             this.Message = message;
@@ -55,7 +55,7 @@ namespace MusicTaggingLight.Models
         //private int result;
         //private string p;
 
-        public T Data { get; set; }
+    public T? Data { get; set; }
 
         public Result()
         {
@@ -76,7 +76,7 @@ namespace MusicTaggingLight.Models
 
         }
 
-        public Result(string message, string innerMessage = "", Status status = Status.NULL, Exception exception = null)
+        public Result(string message, string innerMessage = "", Status status = Status.NULL, Exception? exception = null)
         {
             this.Status = status;
             this.Message = message;
@@ -94,7 +94,7 @@ namespace MusicTaggingLight.Models
 
         }
 
-        public Result(T data, string message, string innerMessage = "", Status status = Status.NULL, Exception exception = null)
+        public Result(T data, string message, string innerMessage = "", Status status = Status.NULL, Exception? exception = null)
         {
             this.Status = status;
             this.Message = message;

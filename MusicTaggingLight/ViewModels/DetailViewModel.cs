@@ -14,9 +14,9 @@ namespace MusicTaggingLight.ViewModels
     public class DetailViewModel : ObservableObject
     {
 		private MainWindowViewModel mwvm;
-		private MusicFileTag musicFileTag;
+		private MusicFileTag? musicFileTag;
 
-		public MusicFileTag MusicfileTag
+		public MusicFileTag? MusicfileTag
 		{
 			get { return musicFileTag; }
 			set 
@@ -28,13 +28,15 @@ namespace MusicTaggingLight.ViewModels
 
 		#region Commands
 
-		public ICommand SaveTagsCommand { get; set; }
+		public ICommand SaveTagsCommand { get; private set; } = null!;
+		public ICommand CancelCommand { get; private set; } = null!;
 
         #endregion
 
 		private void initCommands()
 		{
 			SaveTagsCommand = new RelayCommand(this.Save);
+			CancelCommand = new RelayCommand(this.Cancel);
 		}
 
 
@@ -53,6 +55,13 @@ namespace MusicTaggingLight.ViewModels
 		public void Save()
 		{
 			mwvm.SaveCommand.Execute(MusicfileTag);
+		}
+
+		private void Cancel()
+		{
+			// Collapse detail pane and clear selection via parent VM behavior
+			mwvm.DetColWidth = new Avalonia.Controls.GridLength(1, Avalonia.Controls.GridUnitType.Pixel);
+			mwvm.ClearSelectionAction?.Invoke();
 		}
 	}
 }

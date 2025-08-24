@@ -10,22 +10,22 @@ namespace MusicTaggingLight.Models
 {
     public class MusicFileTag : ObservableObject
     {
-        private string _artist;
-        private string _album;
-        private string _genre;
+    private string? _artist;
+    private string? _album;
+    private string? _genre;
         private uint _year;
-        private string _title;
-        private string _comment;
+    private string? _title;
+    private string? _comment;
         private uint _track;
-        private string _filePath;
-        private string _fileName;
+    private string? _filePath;
+    private string? _fileName;
 
-        private byte[] _albumCover;
+    private byte[]? _albumCover;
 
         /// <summary>
         /// Byte-Array, containing the AlbumCover
         /// </summary>
-        public byte[] AlbumCover
+        public byte[]? AlbumCover
         {
             get { return _albumCover; }
             set { SetProperty(ref _albumCover, value); }
@@ -42,7 +42,7 @@ namespace MusicTaggingLight.Models
         /// <summary>
         /// String, containing the artist of the music file (ID3 Tag)
         /// </summary>
-        public string Artist
+        public string? Artist
         {
             get { return _artist; }
             set { SetProperty(ref _artist, value); }
@@ -51,7 +51,7 @@ namespace MusicTaggingLight.Models
         /// <summary>
         /// String, containing the title of the music file (ID3 Tag)
         /// </summary>
-        public string Title
+        public string? Title
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
@@ -60,7 +60,7 @@ namespace MusicTaggingLight.Models
         /// <summary>
         /// String, containing the album name of the music file (ID3 Tag)
         /// </summary>
-        public string Album
+        public string? Album
         {
             get { return _album; }
             set { SetProperty(ref _album, value); }
@@ -69,7 +69,7 @@ namespace MusicTaggingLight.Models
         /// <summary>
         /// String, containing the genre of the music file (ID3 Tag)
         /// </summary>
-        public string Genre
+        public string? Genre
         {
             get { return _genre; }
             set { SetProperty(ref _genre, value); }
@@ -87,7 +87,7 @@ namespace MusicTaggingLight.Models
         /// <summary>
         /// String, containing additional comments of the music file (ID3 Tag)
         /// </summary>
-        public string Comment
+        public string? Comment
         {
             get { return _comment; }
             set { SetProperty(ref _comment, value); }
@@ -96,7 +96,7 @@ namespace MusicTaggingLight.Models
         /// <summary>
         /// Represents the location on the drive for the music file.
         /// </summary>
-        public string FilePath
+        public string? FilePath
         {
             get { return _filePath; }
             set { SetProperty(ref _filePath, value); }
@@ -105,7 +105,7 @@ namespace MusicTaggingLight.Models
         /// <summary>
         /// Contains the file name without path.
         /// </summary>
-        public string FileName
+        public string? FileName
         {
             get { return _fileName; }
             set { SetProperty(ref _fileName, value); }
@@ -145,8 +145,8 @@ namespace MusicTaggingLight.Models
             tmp.Year = tag.Year;
             tmp.Title = tag.Title;
             tmp.Comment = tag.Comment;
-            if(tag.Pictures.Length >= 1) 
-                tmp.AlbumCover = tag.Pictures?.First().Data.Data;
+            if(tag.Pictures != null && tag.Pictures.Length >= 1 && tag.Pictures.FirstOrDefault()?.Data != null)
+                tmp.AlbumCover = tag.Pictures.First().Data.Data;
             tmp.Track = tag.Track;
             tmp.FilePath = filePath;
             tmp.FileName = System.IO.Path.GetFileNameWithoutExtension(filePath);
@@ -155,12 +155,15 @@ namespace MusicTaggingLight.Models
 
         public static File ConvertMusicFileTagToTag(MusicFileTag musicTag)
         {
+            if (string.IsNullOrEmpty(musicTag.FilePath))
+                throw new ArgumentException("FilePath is required", nameof(musicTag.FilePath));
+
             File tagInfo = TagLib.File.Create(musicTag.FilePath);
 
             //tagInfo.Tag.Clear();
-            tagInfo.Tag.Performers = new string[] { musicTag.Artist ?? ""};       // Sets the FirstPerformer
-            tagInfo.Tag.AlbumArtists = new string[] { musicTag.Artist ?? "" };    // Sets the FirstArtist
-            tagInfo.Tag.Genres = new string[] { musicTag.Genre ?? "" };           // Sets the FirstGenre
+            tagInfo.Tag.Performers = new string[] { musicTag.Artist ?? string.Empty};       // Sets the FirstPerformer
+            tagInfo.Tag.AlbumArtists = new string[] { musicTag.Artist ?? string.Empty };    // Sets the FirstArtist
+            tagInfo.Tag.Genres = new string[] { musicTag.Genre ?? string.Empty };           // Sets the FirstGenre
             tagInfo.Tag.Album = musicTag.Album;
             tagInfo.Tag.Title = musicTag.Title;
             tagInfo.Tag.Comment = musicTag.Comment;

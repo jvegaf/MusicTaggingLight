@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform;
 using System.Xml.Linq;
 using MusicTaggingLight.UI;
 using System.Threading.Tasks;
@@ -21,18 +22,24 @@ namespace MusicTaggingLight
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly MainWindowViewModel vm;
+        private readonly MainWindowViewModel? vm;
         private Dictionary<string,int> OrderDict;
+        private static readonly string ColumnsOrderFilePath =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        "MusicTaggingLight", "colsorder.xml");
 
         public MainWindow()
         {
             InitializeComponent();
             vm = this.DataContext as MainWindowViewModel;
-            vm.SelectRootFolderFunc = new Func<string>(SelectRootFolderDialog);
-            vm.ExitAction = new Action(() => this.Close());
-            vm.ShowAboutWindowAction = new Action(this.ShowAboutWindow);
-            vm.ShowFNExtWindowAction = new Action(this.ShowFNExtrWindow);
-            vm.ClearSelectionAction = new Action(this.ClearSelection);
+            if (vm != null)
+            {
+                vm.SelectRootFolderFunc = new Func<string>(SelectRootFolderDialog);
+                vm.ExitAction = new Action(() => this.Close());
+                vm.ShowAboutWindowAction = new Action(this.ShowAboutWindow);
+                vm.ShowFNExtWindowAction = new Action(this.ShowFNExtrWindow);
+                vm.ClearSelectionAction = new Action(this.ClearSelection);
+            }
             OrderDict = GetColumnsOrder();
         }
 
@@ -72,24 +79,68 @@ namespace MusicTaggingLight
 
         private Dictionary<string,int> GetColumnsOrder()
         {
-            Dictionary<string, int> orderDict = new Dictionary<string, int>();
-            XElement doc = XElement.Load(@"../../Resources/colsorder.xml");
-            IEnumerable<XElement> items = doc.Descendants();
-            foreach (var item in items)
+            var orderDict = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            try
             {
-                orderDict.Add(item.Name.LocalName, int.Parse(item.Value));
+                // Prefer user-specific persisted file in AppData
+                if (File.Exists(ColumnsOrderFilePath))
+                {
+                    var doc = XElement.Load(ColumnsOrderFilePath);
+                    foreach (var item in doc.Descendants())
+                    {
+                        var name = item.Name.LocalName;
+                        if (!string.IsNullOrEmpty(name) && int.TryParse(item.Value, out var val))
+                        {
+                            orderDict[name] = val;
+                        }
+                    }
+                    return orderDict;
+                }
+
+                // Fallback to embedded default resource
+                var uri = new Uri("avares://MusicTaggingLight/Resources/colsorder.xml");
+                using var stream = AssetLoader.Open(uri);
+                var xel = XElement.Load(stream);
+                foreach (var item in xel.Descendants())
+                {
+                    var name = item.Name.LocalName;
+                    if (!string.IsNullOrEmpty(name) && int.TryParse(item.Value, out var val))
+                    {
+                        orderDict[name] = val;
+                    }
+                }
             }
+            catch
+            {
+                // Ignore and return empty/default order
+            }
+
             return orderDict;
         }
 
         private void SaveColumnsOrder()
         {
-            XElement el = new XElement(
-                "items",
-                from keyValue in OrderDict
-                select new XElement(keyValue.Key, keyValue.Value));
-            XDocument doc = new XDocument(el);
-            doc.Save(@"../../Resources/colsorder.xml");
+            try
+            {
+                var el = new XElement(
+                    "items",
+                    from keyValue in OrderDict
+                    select new XElement(keyValue.Key, keyValue.Value));
+                var doc = new XDocument(el);
+
+                var dir = Path.GetDirectoryName(ColumnsOrderFilePath);
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
+                doc.Save(ColumnsOrderFilePath);
+            }
+            catch
+            {
+                // Swallow persist errors; not critical for app to function
+            }
         }
 
 
@@ -102,6 +153,7 @@ namespace MusicTaggingLight
         }
         private async void ShowFNExtrWindow()
         {
+            if (this.vm == null) return;
             var dialog = new FromFNWindow(this.vm);
             this.Opacity = 0.7;
             await dialog.ShowDialog(this);
@@ -126,6 +178,7 @@ namespace MusicTaggingLight
 
         private void dgrFileTags_Drop(object sender, DragEventArgs e)
         {
+            if (vm == null) return;
             vm.ClearCommand.Execute(null);
 
             if (e.Data.Contains(DataFormats.Files))
@@ -171,7 +224,7 @@ namespace MusicTaggingLight
         private void SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var dataGrid = sender as DataGrid;
-            if (dataGrid != null)
+            if (dataGrid != null && vm != null)
             {
                 vm.SelectionChanged(dataGrid.SelectedItems);
             }
@@ -197,7 +250,7 @@ namespace MusicTaggingLight
                 }
             }
 
-            vm.SetNotification("Only *.mp3 files supported!", "Orange");
+            vm?.SetNotification("Only *.mp3 files supported!", "Orange");
             return false;
         }
 
@@ -207,7 +260,11 @@ namespace MusicTaggingLight
             OrderDict.Clear();
             foreach (var column in grid.Columns)
             {
-                OrderDict.Add(column.Header.ToString(), column.DisplayIndex);
+                var header = column.Header?.ToString();
+                if (!string.IsNullOrEmpty(header))
+                {
+                    OrderDict[header] = column.DisplayIndex;
+                }
             }
             SaveColumnsOrder();
         }

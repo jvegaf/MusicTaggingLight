@@ -43,11 +43,15 @@ namespace MusicTaggingLight.Logic
                     try
                     {
                         var tagInfo = File.Create(file);
-                        musicFileTags.Add(MusicFileTag.ConvertTagToMusicFileTag(tagInfo.Tag, tagInfo.Name));
+                        musicFileTags.Add(MusicFileTag.ConvertTagToMusicFileTag(tagInfo.Tag, file));
                     } 
                     catch (CorruptFileException e)
                     {
                         return HandleError(file, e);
+                    }
+                    catch (Exception e)
+                    {
+                        return new Result<List<MusicFileTag>>($"Unexpected error in {file}", Status.Error, e);
                     }
                 }
 
@@ -69,11 +73,15 @@ namespace MusicTaggingLight.Logic
                         continue;
 
                     var tagInfo = File.Create(file);
-                    musicFileTags.Add(MusicFileTag.ConvertTagToMusicFileTag(tagInfo.Tag, tagInfo.Name));
+                    musicFileTags.Add(MusicFileTag.ConvertTagToMusicFileTag(tagInfo.Tag, file));
                 }
                 catch (CorruptFileException e)
                 {
                     return HandleError(file, e);
+                }
+                catch (Exception e)
+                {
+                    return new Result<List<MusicFileTag>>($"Unexpected error in {file}", Status.Error, e);
                 }
             }
 
@@ -98,7 +106,7 @@ namespace MusicTaggingLight.Logic
 
         public Result SaveTagToFile(MusicFileTag tag)
         {
-            if (String.IsNullOrEmpty(tag.FilePath))
+            if (string.IsNullOrEmpty(tag.FilePath))
                 return new Result("No FilePath specified", Status.Error);
 
             File tagInfo = MusicFileTag.ConvertMusicFileTagToTag(tag);
@@ -110,47 +118,59 @@ namespace MusicTaggingLight.Logic
         
         private void RenameFile(MusicFileTag tag)
         {
-            string CurrentFName = System.IO.Path.GetFileNameWithoutExtension(tag.FilePath);
-            if (CurrentFName == tag.FileName) return;
-
-            FileInfo currentFile = new FileInfo(tag.FilePath);
-            currentFile.MoveTo(currentFile.Directory.FullName + "\\" + tag.FileName + currentFile.Extension);
+            if (string.IsNullOrEmpty(tag.FilePath)) return;
+            string currentFName = System.IO.Path.GetFileNameWithoutExtension(tag.FilePath) ?? string.Empty;
+            if (currentFName == tag.FileName || string.IsNullOrEmpty(tag.FileName)) return;
+            FileInfo currentFile = new FileInfo(tag.FilePath!);
+            var dir = currentFile.Directory?.FullName ?? Path.GetDirectoryName(tag.FilePath) ?? string.Empty;
+            if (!string.IsNullOrEmpty(dir))
+            {
+                currentFile.MoveTo(Path.Combine(dir, tag.FileName + currentFile.Extension));
+            }
         }
 
         public Result SaveTagsExtractedFromFilename(string pattern, MusicFileTag tag)
         {
+            if (string.IsNullOrEmpty(tag.FileName))
+                return new Result("No FileName specified", Status.Error);
             List<string> filenameComponents = tag.FileName.Split('-').Select(x => { return x.Trim(); }).ToList();
             var patternComponents = pattern.Split('-').Select(x => { return x.Trim(); }).ToList();
 
             if (pattern.Contains(artist))
             {
                 var index = patternComponents.IndexOf(artist);
-                tag.Artist = filenameComponents[index];
+                if (index >= 0 && index < filenameComponents.Count)
+                    tag.Artist = filenameComponents[index];
             }
             if (pattern.Contains(title))
             {
                 var index = patternComponents.IndexOf(title);
-                tag.Title = filenameComponents[index];
+                if (index >= 0 && index < filenameComponents.Count)
+                    tag.Title = filenameComponents[index];
             }
             if (pattern.Contains(year))
             {
                 var index = patternComponents.IndexOf(year);
-                tag.Year = Convert.ToUInt32(filenameComponents[index]);
+                if (index >= 0 && index < filenameComponents.Count && uint.TryParse(filenameComponents[index], out var y))
+                    tag.Year = y;
             }
             if (pattern.Contains(album))
             {
                 var index = patternComponents.IndexOf(album);
-                tag.Album = filenameComponents[index];
+                if (index >= 0 && index < filenameComponents.Count)
+                    tag.Album = filenameComponents[index];
             }
             if (pattern.Contains(track))
             {
                 var index = patternComponents.IndexOf(track);
-                tag.Track = Convert.ToUInt32(filenameComponents[index]);
+                if (index >= 0 && index < filenameComponents.Count && uint.TryParse(filenameComponents[index], out var t))
+                    tag.Track = t;
             }
             if (pattern.Contains(genre))
             {
                 var index = patternComponents.IndexOf(genre);
-                tag.Genre = filenameComponents[index];
+                if (index >= 0 && index < filenameComponents.Count)
+                    tag.Genre = filenameComponents[index];
             }
 
             return SaveTagToFile(tag);
