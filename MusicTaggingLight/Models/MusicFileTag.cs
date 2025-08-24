@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DevExpress.Mvvm;
+using CommunityToolkit.Mvvm.ComponentModel;
 using TagLib;
 
 namespace MusicTaggingLight.Models
 {
-    public class MusicFileTag : BindableBase
+    public class MusicFileTag : ObservableObject
     {
         private string _artist;
         private string _album;
@@ -28,7 +28,7 @@ namespace MusicTaggingLight.Models
         public byte[] AlbumCover
         {
             get { return _albumCover; }
-            set { SetProperty(ref _albumCover, value, () => AlbumCover); }
+            set { SetProperty(ref _albumCover, value); }
         }
         /// <summary>
         /// String, containing the track number of the music file (ID3 Tag)
@@ -36,7 +36,7 @@ namespace MusicTaggingLight.Models
         public uint Track
         {
             get { return _track; }
-            set { SetProperty(ref _track, value, () => Track); }
+            set { SetProperty(ref _track, value); }
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace MusicTaggingLight.Models
         public string Artist
         {
             get { return _artist; }
-            set { SetProperty(ref _artist, value, () => Artist); }
+            set { SetProperty(ref _artist, value); }
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace MusicTaggingLight.Models
         public string Title
         {
             get { return _title; }
-            set { SetProperty(ref _title, value, () => Title); }
+            set { SetProperty(ref _title, value); }
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace MusicTaggingLight.Models
         public string Album
         {
             get { return _album; }
-            set { SetProperty(ref _album, value, () => Album); }
+            set { SetProperty(ref _album, value); }
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace MusicTaggingLight.Models
         public string Genre
         {
             get { return _genre; }
-            set { SetProperty(ref _genre, value, () => Genre); }
+            set { SetProperty(ref _genre, value); }
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace MusicTaggingLight.Models
         public uint Year
         {
             get { return _year; }
-            set { SetProperty(ref _year, value, () => Year); }
+            set { SetProperty(ref _year, value); }
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace MusicTaggingLight.Models
         public string Comment
         {
             get { return _comment; }
-            set { SetProperty(ref _comment, value, () => Comment); }
+            set { SetProperty(ref _comment, value); }
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace MusicTaggingLight.Models
         public string FilePath
         {
             get { return _filePath; }
-            set { SetProperty(ref _filePath, value, () => FilePath); }
+            set { SetProperty(ref _filePath, value); }
         }
         
         /// <summary>
@@ -108,7 +108,7 @@ namespace MusicTaggingLight.Models
         public string FileName
         {
             get { return _fileName; }
-            set { SetProperty(ref _fileName, value, () => FileName); }
+            set { SetProperty(ref _fileName, value); }
         }
 
 

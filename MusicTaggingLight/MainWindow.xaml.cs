@@ -6,11 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using System.Windows;
-using System.Windows.Controls;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
 using System.Xml.Linq;
 using MusicTaggingLight.UI;
-using Ookii.Dialogs.Wpf;
+using System.Threading.Tasks;
 
 namespace MusicTaggingLight
 {
@@ -27,11 +29,16 @@ namespace MusicTaggingLight
             InitializeComponent();
             vm = this.DataContext as MainWindowViewModel;
             vm.SelectRootFolderFunc = new Func<string>(SelectRootFolderDialog);
-            vm.ExitAction = new Action(() => Application.Current.Shutdown(0));
+            vm.ExitAction = new Action(() => this.Close());
             vm.ShowAboutWindowAction = new Action(this.ShowAboutWindow);
             vm.ShowFNExtWindowAction = new Action(this.ShowFNExtrWindow);
             vm.ClearSelectionAction = new Action(this.ClearSelection);
             OrderDict = GetColumnsOrder();
+        }
+
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
         }
 
         /// <summary>
@@ -40,9 +47,26 @@ namespace MusicTaggingLight
         /// <returns>Returns the root directory of the selected folder</returns>
         private string SelectRootFolderDialog()
         {
-            var dialog = new VistaFolderBrowserDialog();
-            if (dialog.ShowDialog() == true)
-                return dialog.SelectedPath;
+            var task = SelectRootFolderDialogAsync();
+            return task.Result;
+        }
+        
+        private async Task<string> SelectRootFolderDialogAsync()
+        {
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel != null)
+            {
+                var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(new Avalonia.Platform.Storage.FolderPickerOpenOptions
+                {
+                    Title = "Select root folder",
+                    AllowMultiple = false
+                });
+                
+                if (folders.Count == 1)
+                {
+                    return folders[0].Path.LocalPath;
+                }
+            }
             return "";
         }
 
@@ -69,23 +93,24 @@ namespace MusicTaggingLight
         }
 
 
-        private void ShowAboutWindow()
+        private async void ShowAboutWindow()
         {
             var about = new AboutWindow();
             this.Opacity = 0.7;
-            bool? dialogActive = about.ShowDialog();
-            if (dialogActive == false)
-                this.Opacity = 1.0;
+            await about.ShowDialog(this);
+            this.Opacity = 1.0;
         }
-        private void ShowFNExtrWindow()
+        private async void ShowFNExtrWindow()
         {
             var dialog = new FromFNWindow(this.vm);
             this.Opacity = 0.7;
-            bool? dialogActive = dialog.ShowDialog();
-            if (dialogActive == false)
-                this.Opacity = 1.0;
+            await dialog.ShowDialog(this);
+            this.Opacity = 1.0;
         }
 
+        // This event handler will need to be attached manually or converted to work with Avalonia DataGrid
+        // For now, commenting out as Avalonia DataGrid has different event model
+        /*
         private void dgrFileTags_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             if (e.Column.Header.ToString().ToLower() == "albumcover")
@@ -97,34 +122,39 @@ namespace MusicTaggingLight
                 e.Column.DisplayIndex = OrderDict[e.Column.Header.ToString()];
             }
         }
+        */
 
         private void dgrFileTags_Drop(object sender, DragEventArgs e)
         {
             vm.ClearCommand.Execute(null);
 
-            string[] data = (string[])e.Data.GetData(nameof(DataFormats.FileDrop));
-
-            if (!CheckForMp3(data))
-                return;
-
-            var directories = new List<string>();
-            var files = new List<string>();
-
-            // Validate, if dropped data are files or directories.
-            // Both have different approaches how to handle the input.
-            foreach (var d in data)
+            if (e.Data.Contains(DataFormats.Files))
             {
-                if (IsDirectory(d))
-                    directories.Add(d);
-                else
-                    files.Add(d);
+                var files = e.Data.GetFiles();
+                var data = files?.Select(f => f.Path.LocalPath).ToArray() ?? Array.Empty<string>();
+
+                if (!CheckForMp3(data))
+                    return;
+
+                var directories = new List<string>();
+                var filesList = new List<string>();
+
+                // Validate, if dropped data are files or directories.
+                // Both have different approaches how to handle the input.
+                foreach (var d in data)
+                {
+                    if (IsDirectory(d))
+                        directories.Add(d);
+                    else
+                        filesList.Add(d);
+                }
+
+                if (directories.Count > 0)
+                    vm.DragDropDirectory(directories);
+
+                if (filesList.Count > 0)
+                    vm.DragDropFiles(filesList);
             }
-
-            if (directories.Count > 0)
-                vm.DragDropDirectory(directories);
-
-            if (files.Count > 0)
-                vm.DragDropFiles(files);
         }
 
         /// <summary>
@@ -140,12 +170,20 @@ namespace MusicTaggingLight
 
         private void SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            vm.SelectionChanged(dgrFileTags.SelectedItems);
+            var dataGrid = sender as DataGrid;
+            if (dataGrid != null)
+            {
+                vm.SelectionChanged(dataGrid.SelectedItems);
+            }
         }
 
         private void ClearSelection()
         {
-            dgrFileTags.SelectedItems.Clear();
+            var dataGrid = this.FindControl<DataGrid>("dgrFileTags");
+            if (dataGrid != null)
+            {
+                dataGrid.SelectedItems.Clear();
+            }
         }
 
         private bool CheckForMp3(string[] data)

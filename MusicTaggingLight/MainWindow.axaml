@@ -1,0 +1,96 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:MusicTaggingLight"
+        x:Class="MusicTaggingLight.MainWindow"
+        Title="Music Tagging Light"
+        Height="560"
+        Width="1028"
+        MinHeight="350"
+        MinWidth="540">
+    
+    <Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext>
+    
+    <Window.KeyBindings>
+        <KeyBinding Command="{Binding SaveCommand}" Gesture="Ctrl+S" />
+        <KeyBinding Command="{Binding OpenAboutCommand}" Gesture="Ctrl+I" />
+        <KeyBinding Command="{Binding ClearSelectionCommand}" Gesture="Escape" />
+        <KeyBinding Command="{Binding ClearCommand}" Gesture="Alt+C" />
+    </Window.KeyBindings>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <!-- Top section for source folder -->
+        <StackPanel Grid.Row="0" Orientation="Vertical" Margin="10">
+            <TextBlock Text="Source Folder:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <DockPanel>
+                <Button DockPanel.Dock="Right" 
+                        Command="{Binding SelectRootFolderCommand}" 
+                        Content="Browse..." 
+                        Width="100" 
+                        Margin="5,0,0,0"/>
+                <TextBox Text="{Binding RootPath}" 
+                         Watermark="Select root folder..." 
+                         Background="White"/>
+            </DockPanel>
+        </StackPanel>
+        
+        <!-- Main content area -->
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <DataGrid Grid.Column="0"
+                      Name="dgrFileTags"
+                      ItemsSource="{Binding MusicFileTags}"
+                      SelectionMode="Extended"
+                      AutoGenerateColumns="True"
+                      IsReadOnly="False"
+                      GridLinesVisibility="All"
+                      HeadersVisibility="Column"
+                      DragDrop.AllowDrop="True">
+                <DataGrid.KeyBindings>
+                    <KeyBinding Command="{Binding SaveCommand}" Gesture="Ctrl+S" />
+                </DataGrid.KeyBindings>
+            </DataGrid>
+            
+            <ContentControl Grid.Column="1" 
+                            Content="{Binding DetailView}" 
+                            Width="{Binding DetColActualWidth}"/>
+        </Grid>
+        
+        <!-- Button toolbar -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    Margin="10" 
+                    Spacing="5">
+            <Button Command="{Binding SaveCommand}" Content="Save" />
+            <Button Command="{Binding ClearCommand}" Content="Clear List" />
+            <Button Command="{Binding OpenAboutCommand}" Content="About" />
+            <Button Command="{Binding SearchOnlineCommand}" Content="Search Online" />
+            <Button Command="{Binding TagFromFileNameCommand}" Content="From Filename" />
+            <Button Command="{Binding ExitCommand}" Content="Exit" />
+        </StackPanel>
+        
+        <!-- Status bar -->
+        <Border Grid.Row="3" 
+                Background="LightGray" 
+                BorderThickness="0,1,0,0" 
+                BorderBrush="Gray">
+            <TextBlock Name="txtNotification"
+                       Text="{Binding NotificationText}"
+                       Foreground="{Binding NotificationColor}"
+                       Margin="5,2"
+                       VerticalAlignment="Center" />
+        </Border>
+    </Grid>
+</Window>

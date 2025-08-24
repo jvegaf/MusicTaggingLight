@@ -1,0 +1,34 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="MusicTaggingLight.UI.AboutWindow"
+        Title="About"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        Height="283"
+        Width="468">
+    <Grid Margin="10">
+        <StackPanel>
+            <TextBlock Text="Music Tagging Light" FontSize="18" FontWeight="Bold" Margin="0,10,0,5"/>
+            <TextBlock Text="Version 1.0.0.2" Margin="0,0,0,10"/>
+            <TextBlock Text="A small tool which helps to tag mp3 files" TextWrapping="Wrap" Margin="0,0,0,20"/>
+            
+            <TextBlock Text="GitHub:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <TextBlock Name="txtGithub" 
+                       Text="https://github.com/jvegaf/MusicTaggingLight" 
+                       Foreground="Blue" 
+                       Cursor="Hand"
+                       PointerPressed="TxtGithub_PointerPressed"
+                       Margin="0,0,0,15"/>
+            
+            <TextBlock Text="Icons:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <TextBlock Name="txtIcons" 
+                       Text="https://icons8.com/" 
+                       Foreground="Blue" 
+                       Cursor="Hand"
+                       PointerPressed="TxtIcons_PointerPressed"
+                       Margin="0,0,0,20"/>
+                       
+            <Button Content="Close" HorizontalAlignment="Right" Click="CloseButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
